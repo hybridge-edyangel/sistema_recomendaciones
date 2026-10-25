@@ -1,8 +1,8 @@
-# 🎬 Sistema de Recomendación de Películas
+# Sistema de Recomendación de Películas
 
 Sistema de recomendación progresivo que cubre fundamentos, filtrado basado en contenido y técnicas de NLP, construido con un dataset de ~45,000 películas.
 
-## 📋 Contenido del Proyecto
+## Contenido del Proyecto
 
 | Módulo | Archivo | Descripción |
 |--------|---------|-------------|
@@ -11,7 +11,7 @@ Sistema de recomendación progresivo que cubre fundamentos, filtrado basado en c
 | Content-Based | `02_content_based.py` | TF-IDF, metadata soup, similitud coseno, filtros avanzados |
 | NLP | `03_nlp_tecnicas.py` | Tokenización, stemming, lematización, BoW vs TF-IDF, wordclouds |
 
-## 📂 Estructura
+## Estructura
 
 ```
 sistema_recomendaciones/
@@ -27,7 +27,7 @@ sistema_recomendaciones/
 └── README.md                 # Este archivo
 ```
 
-## 🚀 Instalación
+## Instalación
 
 ```bash
 # Clonar el repositorio
@@ -41,7 +41,7 @@ pip install -r requirements.txt
 python -c "import nltk; nltk.download('punkt_tab'); nltk.download('stopwords'); nltk.download('wordnet')"
 ```
 
-## ▶️ Ejecución
+## Ejecución
 
 Cada módulo se ejecuta de forma independiente y genera salida en consola + gráficas en `output/`:
 
@@ -56,7 +56,7 @@ python 02_content_based.py
 python 03_nlp_tecnicas.py
 ```
 
-## 📊 ¿Qué aprenderás?
+## ¿Qué aprenderás?
 
 ### Módulo 1 — Fundamentos
 - Tipos de sistemas de recomendación (simple, content-based, colaborativo, híbrido)
@@ -76,7 +76,7 @@ python 03_nlp_tecnicas.py
 - Nubes de palabras (wordclouds)
 - Similitud coseno vs distancia euclidiana
 
-## 🛠️ Tecnologías
+## Tecnologías
 
 - **Python 3.10+**
 - **pandas** — Manipulación de datos
@@ -85,6 +85,7 @@ python 03_nlp_tecnicas.py
 - **matplotlib** — Visualizaciones
 - **wordcloud** — Nubes de palabras
 
-## 📄 Licencia
+## Licencia
 
 MIT
+

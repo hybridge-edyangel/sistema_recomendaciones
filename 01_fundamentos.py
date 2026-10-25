@@ -63,22 +63,22 @@ def print_teoria():
     ║  ┌─────────────────────────────────────────────────────────────┐   ║
     ║  │  TIPOS PRINCIPALES:                                        │   ║
     ║  │                                                            │   ║
-    ║  │  1. 📊 SIMPLE (Por Popularidad)                            │   ║
+    ║  │  1. SIMPLE (Por Popularidad)                               │   ║
     ║  │     → Recomienda lo más popular/mejor valorado              │   ║
     ║  │     → No personalizado, igual para todos                   │   ║
     ║  │     → Ej: "Top 10 películas más vistas"                    │   ║
     ║  │                                                            │   ║
-    ║  │  2. 🎯 BASADO EN CONTENIDO (Content-Based)                 │   ║
+    ║  │  2. BASADO EN CONTENIDO (Content-Based)                    │   ║
     ║  │     → Analiza las características del ítem                 │   ║
     ║  │     → Recomienda ítems similares a los que te gustaron     │   ║
     ║  │     → Ej: "Si te gustó Toy Story → te gustará Shrek"      │   ║
     ║  │                                                            │   ║
-    ║  │  3. 👥 FILTRADO COLABORATIVO (Collaborative)               │   ║
+    ║  │  3. FILTRADO COLABORATIVO (Collaborative)                  │   ║
     ║  │     → Usa las preferencias de usuarios similares           │   ║
     ║  │     → "Usuarios como tú también vieron..."                 │   ║
     ║  │     → Requiere datos de interacción usuario-ítem           │   ║
     ║  │                                                            │   ║
-    ║  │  4. 🔀 HÍBRIDO                                             │   ║
+    ║  │  4. HÍBRIDO                                                │   ║
     ║  │     → Combina contenido + colaborativo                     │   ║
     ║  │     → Máxima precisión, mayor complejidad                  │   ║
     ║  └─────────────────────────────────────────────────────────────┘   ║
@@ -105,11 +105,11 @@ def analisis_exploratorio(df):
     """
     ensure_output_dir()
     print("\n" + "=" * 70)
-    print("📊 ANÁLISIS EXPLORATORIO DE DATOS")
+    print("ANÁLISIS EXPLORATORIO DE DATOS")
     print("=" * 70)
 
     # --- Estadísticas generales ---
-    print(f"\n📈 Estadísticas generales:")
+    print(f"\nEstadísticas generales:")
     print(f"   Total de películas: {len(df):,}")
     print(f"   Rango de años: {df['year'].min():.0f} - {df['year'].max():.0f}")
     print(f"   Rating promedio: {df['vote_average'].mean():.2f}")
@@ -140,7 +140,7 @@ def analisis_exploratorio(df):
     path_dist = f"{OUTPUT_DIR}/01_distribucion_ratings_votos.png"
     plt.savefig(path_dist, dpi=150, bbox_inches="tight")
     plt.close()
-    print(f"   💾 Guardado: {path_dist}")
+    print(f"   Guardado: {path_dist}")
 
     # --- Gráfico 3: Top 15 géneros más frecuentes ---
     all_genres = df["genres_list"].explode()
@@ -160,7 +160,7 @@ def analisis_exploratorio(df):
     path_genres = f"{OUTPUT_DIR}/01_top_generos.png"
     plt.savefig(path_genres, dpi=150, bbox_inches="tight")
     plt.close()
-    print(f"   💾 Guardado: {path_genres}")
+    print(f"   Guardado: {path_genres}")
 
     # --- Gráfico 4: Popularidad vs Rating ---
     popular = df[df["vote_count"] >= 50].copy()
@@ -184,7 +184,7 @@ def analisis_exploratorio(df):
     path_pop = f"{OUTPUT_DIR}/01_popularidad_vs_rating.png"
     plt.savefig(path_pop, dpi=150, bbox_inches="tight")
     plt.close()
-    print(f"   💾 Guardado: {path_pop}")
+    print(f"   Guardado: {path_pop}")
 
 
 # =============================================================================
@@ -199,20 +199,20 @@ def simple_recommender(df, percentile=0.90, top_n=15):
         WR = (v / (v + m)) * R + (m / (v + m)) * C
     """
     print("\n" + "=" * 70)
-    print("🏆 RECOMENDADOR SIMPLE (POR POPULARIDAD)")
+    print("RECOMENDADOR SIMPLE (POR POPULARIDAD)")
     print("=" * 70)
 
     # Calcular C (rating promedio global)
     C = df["vote_average"].mean()
-    print(f"\n   📊 Rating promedio global (C): {C:.4f}")
+    print(f"\n   Rating promedio global (C): {C:.4f}")
 
     # Calcular m (mínimo de votos, percentil 90 por defecto)
     m = df["vote_count"].quantile(percentile)
-    print(f"   📊 Mínimo de votos requerido (m, percentil {percentile*100:.0f}%): {m:.0f}")
+    print(f"   Mínimo de votos requerido (m, percentil {percentile*100:.0f}%): {m:.0f}")
 
     # Filtrar películas que cumplen el mínimo de votos
     qualified = df[df["vote_count"] >= m].copy()
-    print(f"   📊 Películas que califican: {len(qualified):,} de {len(df):,}")
+    print(f"   Películas que califican: {len(qualified):,} de {len(df):,}")
 
     # Calcular el weighted rating para cada película calificada
     qualified["weighted_rating"] = qualified.apply(
@@ -224,7 +224,7 @@ def simple_recommender(df, percentile=0.90, top_n=15):
 
     # Mostrar Top-N
     top = qualified.head(top_n)
-    print(f"\n   🎬 TOP {top_n} PELÍCULAS (Rating Ponderado):")
+    print(f"\n   TOP {top_n} PELÍCULAS (Rating Ponderado):")
     print("   " + "─" * 66)
 
     for i, (_, row) in enumerate(top.iterrows(), 1):
@@ -246,7 +246,7 @@ def recommend_by_genre(df, genre, percentile=0.85, top_n=10):
     genre_df = df[df["genres_list"].apply(lambda x: genre in x)].copy()
 
     if genre_df.empty:
-        print(f"   ⚠️  No se encontraron películas del género '{genre}'")
+        print(f"   No se encontraron películas del género '{genre}'")
         return pd.DataFrame()
 
     C = genre_df["vote_average"].mean()
@@ -259,7 +259,7 @@ def recommend_by_genre(df, genre, percentile=0.85, top_n=10):
     qualified = qualified.sort_values("weighted_rating", ascending=False)
 
     top = qualified.head(top_n)
-    print(f"\n   🎬 TOP {top_n} PELÍCULAS — Género: {genre}")
+    print(f"\n   TOP {top_n} PELÍCULAS — Género: {genre}")
     print(f"   (C={C:.2f}, m={m:.0f}, {len(qualified)} califican)")
     print("   " + "─" * 66)
 
@@ -316,7 +316,7 @@ def visualize_weighted_rating_effect(df):
     path = f"{OUTPUT_DIR}/01_efecto_weighted_rating.png"
     plt.savefig(path, dpi=150, bbox_inches="tight")
     plt.close()
-    print(f"\n   💾 Guardado: {path}")
+    print(f"\n   Guardado: {path}")
 
 
 # =============================================================================
@@ -330,7 +330,7 @@ if __name__ == "__main__":
     qualified = simple_recommender(df, percentile=0.90, top_n=15)
 
     print("\n" + "=" * 70)
-    print("🎭 RECOMENDACIONES POR GÉNERO")
+    print("RECOMENDACIONES POR GÉNERO")
     print("=" * 70)
 
     for genre in ["Animation", "Science Fiction", "Drama"]:
@@ -339,5 +339,5 @@ if __name__ == "__main__":
     visualize_weighted_rating_effect(df)
 
     print("\n" + "=" * 70)
-    print("✅ Módulo 01 completado. Revisa las gráficas en output/")
+    print("Módulo 01 completado. Revisa las gráficas en output/")
     print("=" * 70)

@@ -86,7 +86,7 @@ def load_and_clean_data(include_keywords=True):
     Retorna:
         pd.DataFrame: DataFrame limpio listo para análisis
     """
-    print("📂 Cargando movies_metadata.csv...")
+    print("Cargando movies_metadata.csv...")
     movies = pd.read_csv(MOVIES_PATH, low_memory=False)
 
     # --- Limpieza de IDs corruptos ---
@@ -104,7 +104,7 @@ def load_and_clean_data(include_keywords=True):
     movies["runtime"] = pd.to_numeric(movies["runtime"], errors="coerce")
 
     # --- Parseo de columnas JSON ---
-    print("🔧 Parseando columnas JSON (genres, production_companies)...")
+    print("Parseando columnas JSON (genres, production_companies)...")
     movies["genres_list"] = movies["genres"].apply(parse_json_column)
     movies["genres_str"] = movies["genres_list"].apply(lambda x: ", ".join(x) if x else "Sin género")
 
@@ -121,7 +121,7 @@ def load_and_clean_data(include_keywords=True):
 
     # --- Merge con keywords ---
     if include_keywords:
-        print("🔗 Mergeando con keywords.csv...")
+        print("Mergeando con keywords.csv...")
         keywords = pd.read_csv(KEYWORDS_PATH)
         keywords["id"] = keywords["id"].apply(safe_int)
         keywords = keywords.dropna(subset=["id"])
@@ -141,7 +141,7 @@ def load_and_clean_data(include_keywords=True):
     # --- Resetear índice ---
     movies = movies.reset_index(drop=True)
 
-    print(f"✅ Dataset listo: {len(movies)} películas cargadas")
+    print(f"Dataset listo: {len(movies)} películas cargadas")
     return movies
 
 
@@ -261,10 +261,10 @@ if __name__ == "__main__":
     # Test básico de carga
     df = load_and_clean_data()
 
-    print(f"\n📊 Primeras 5 películas:")
+    print(f"\nPrimeras 5 películas:")
     print(df[["title", "year", "genres_str", "vote_average", "vote_count"]].head().to_string())
 
-    print(f"\n🔍 Test fuzzy matching:")
+    print(f"\nTest fuzzy matching:")
     matches = fuzzy_match_title("Toystory", df["title"])
     print(f"  'Toystory' → {matches}")
 

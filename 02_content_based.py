@@ -77,7 +77,7 @@ def build_tfidf_model(df):
     Construye el modelo TF-IDF sobre las sinopsis de películas.
     Usa linear_kernel para similitud coseno eficiente.
     """
-    print("\n🔧 Construyendo modelo TF-IDF sobre sinopsis...")
+    print("\nConstruyendo modelo TF-IDF sobre sinopsis...")
 
     tfidf = TfidfVectorizer(
         max_features=20000,
@@ -91,14 +91,14 @@ def build_tfidf_model(df):
 
     tfidf_matrix = tfidf.fit_transform(df["overview"])
 
-    print(f"   📐 Forma de la matriz TF-IDF: {tfidf_matrix.shape}")
-    print(f"   📝 Vocabulario: {len(tfidf.vocabulary_):,} términos únicos")
-    print(f"   💾 Densidad de la matriz: {tfidf_matrix.nnz / (tfidf_matrix.shape[0] * tfidf_matrix.shape[1]) * 100:.4f}%")
+    print(f"   Forma de la matriz TF-IDF: {tfidf_matrix.shape}")
+    print(f"   Vocabulario: {len(tfidf.vocabulary_):,} términos únicos")
+    print(f"   Densidad de la matriz: {tfidf_matrix.nnz / (tfidf_matrix.shape[0] * tfidf_matrix.shape[1]) * 100:.4f}%")
 
-    print("   ⏳ Calculando similitud coseno con linear_kernel (optimizado)...")
+    print("   Calculando similitud coseno con linear_kernel (optimizado)...")
     cosine_sim = linear_kernel(tfidf_matrix, tfidf_matrix)
 
-    print(f"   ✅ Matriz de similitud: {cosine_sim.shape}")
+    print(f"   Matriz de similitud: {cosine_sim.shape}")
     return tfidf_matrix, cosine_sim, tfidf
 
 
@@ -120,11 +120,11 @@ def get_recommendations(title, df, cosine_sim, n=10, indices=None):
     if title not in indices:
         matches = fuzzy_match_title(title, df["title"])
         if not matches:
-            print(f"   ⚠️  No se encontró '{title}'. Intenta con otro título.")
+            print(f"   No se encontró '{title}'. Intenta con otro título.")
             return pd.DataFrame()
         matched_title = matches[0]
         if matched_title.lower() != title.lower():
-            print(f"   🔍 ¿Quisiste decir '{matched_title}'?")
+            print(f"   ¿Quisiste decir '{matched_title}'?")
         target_title = matched_title
     else:
         target_title = title
@@ -158,12 +158,12 @@ def build_soup_model(df):
     Construye un modelo de recomendación usando Metadata Soup
     (keywords, cast, director, géneros y sinopsis) con CountVectorizer y cosine_similarity.
     """
-    print("\n🍲 Construyendo modelo con Metadata Soup...")
+    print("\nConstruyendo modelo con Metadata Soup...")
 
     df_soup = df.copy()
     df_soup["soup"] = df_soup.apply(create_soup, axis=1)
 
-    print(f"   📝 Ejemplo de soup:")
+    print(f"   Ejemplo de soup:")
     sample = df_soup.iloc[0]
     print(f"      Título: {sample['title']}")
     print(f"      Soup: {sample['soup'][:150]}...")
@@ -175,13 +175,13 @@ def build_soup_model(df):
     )
     count_matrix = count_vec.fit_transform(df_soup["soup"]).astype(np.float32)
 
-    print(f"   📐 Forma de la matriz Count: {count_matrix.shape}")
-    print(f"   📝 Vocabulario: {len(count_vec.vocabulary_):,} términos")
+    print(f"   Forma de la matriz Count: {count_matrix.shape}")
+    print(f"   Vocabulario: {len(count_vec.vocabulary_):,} términos")
 
-    print("   ⏳ Calculando similitud coseno sobre metadata soup...")
+    print("   Calculando similitud coseno sobre metadata soup...")
     cosine_sim_soup = cosine_similarity(count_matrix, count_matrix)
 
-    print(f"   ✅ Matriz de similitud: {cosine_sim_soup.shape}")
+    print(f"   Matriz de similitud: {cosine_sim_soup.shape}")
     return count_matrix, cosine_sim_soup, count_vec, df_soup
 
 
@@ -195,12 +195,12 @@ def compare_methods(title, df, cosine_sim_tfidf, cosine_sim_soup, n=8):
     Metadata Soup (overview + genres + keywords + cast + director).
     """
     print(f"\n{'=' * 70}")
-    print(f"🔬 COMPARACIÓN: TF-IDF vs Metadata Soup para '{title}'")
+    print(f"COMPARACIÓN: TF-IDF vs Metadata Soup para '{title}'")
     print(f"{'=' * 70}")
 
     matches = fuzzy_match_title(title, df["title"])
     if not matches:
-        print(f"   ⚠️  No se encontró '{title}'")
+        print(f"   No se encontró '{title}'")
         return
 
     matched_title = matches[0]
@@ -234,7 +234,7 @@ def get_recommendations_advanced(title, df, cosine_sim, n=10,
     """
     matches = fuzzy_match_title(title, df["title"])
     if not matches:
-        print(f"   ⚠️  No se encontró '{title}'")
+        print(f"   No se encontró '{title}'")
         return pd.DataFrame()
 
     matched_title = matches[0]
@@ -287,7 +287,7 @@ def visualize_similarity_heatmap(titles, df, cosine_sim, method_name="TF-IDF"):
             valid_titles.append(matches[0])
 
     if len(indices_list) < 2:
-        print("   ⚠️  Se necesitan al menos 2 películas válidas para el heatmap")
+        print("   Se necesitan al menos 2 películas válidas para el heatmap")
         return
 
     sim_sub = cosine_sim[np.ix_(indices_list, indices_list)]
@@ -314,7 +314,7 @@ def visualize_similarity_heatmap(titles, df, cosine_sim, method_name="TF-IDF"):
     path = f"{OUTPUT_DIR}/02_heatmap_similitud_{method_name.lower().replace(' ', '_')}.png"
     plt.savefig(path, dpi=150, bbox_inches="tight")
     plt.close()
-    print(f"   💾 Guardado: {path}")
+    print(f"   Guardado: {path}")
 
 
 # =============================================================================
@@ -327,14 +327,14 @@ if __name__ == "__main__":
     indices = get_indices_mapping(df)
 
     print("\n" + "=" * 70)
-    print("📝 MÉTODO 1: TF-IDF sobre Sinopsis (Overview) con linear_kernel")
+    print("MÉTODO 1: TF-IDF sobre Sinopsis (Overview) con linear_kernel")
     print("=" * 70)
 
     tfidf_matrix, cosine_sim_tfidf, tfidf_vec = build_tfidf_model(df)
 
     test_movies = ["Toy Story", "The Dark Knight", "The Godfather"]
     for movie in test_movies:
-        print(f"\n   🎬 Recomendaciones para '{movie}' (TF-IDF + linear_kernel):")
+        print(f"\n   Recomendaciones para '{movie}' (TF-IDF + linear_kernel):")
         print("   " + "─" * 60)
         recs = get_recommendations(movie, df, cosine_sim_tfidf, n=8, indices=indices)
         if not recs.empty:
@@ -342,13 +342,13 @@ if __name__ == "__main__":
                 print(f"   {i:2d}. {row['title']:<35} Sim: {row['similarity']:.3f} │ Rating: {row['vote_average']:.1f}")
 
     print("\n" + "=" * 70)
-    print("🍲 MÉTODO 2: Metadata Soup (Genres + Keywords + Cast + Director + Overview)")
+    print("MÉTODO 2: Metadata Soup (Genres + Keywords + Cast + Director + Overview)")
     print("=" * 70)
 
     count_matrix, cosine_sim_soup, count_vec, df = build_soup_model(df)
 
     for movie in test_movies:
-        print(f"\n   🎬 Recomendaciones para '{movie}' (Metadata Soup):")
+        print(f"\n   Recomendaciones para '{movie}' (Metadata Soup):")
         print("   " + "─" * 60)
         recs = get_recommendations(movie, df, cosine_sim_soup, n=8, indices=indices)
         if not recs.empty:
@@ -359,10 +359,10 @@ if __name__ == "__main__":
         compare_methods(movie, df, cosine_sim_tfidf, cosine_sim_soup, n=8)
 
     print(f"\n{'=' * 70}")
-    print("🔧 RECOMENDACIONES CON FILTROS AVANZADOS")
+    print("RECOMENDACIONES CON FILTROS AVANZADOS")
     print(f"{'=' * 70}")
 
-    print("\n   🎬 Películas similares a 'The Dark Knight' (solo Action, post-2000, rating≥7):")
+    print("\n   Películas similares a 'The Dark Knight' (solo Action, post-2000, rating≥7):")
     print("   " + "─" * 60)
     filtered = get_recommendations_advanced(
         "The Dark Knight", df, cosine_sim_soup,
@@ -374,7 +374,7 @@ if __name__ == "__main__":
             print(f"   {i:2d}. {row['title']}{year_str:<35} Sim: {row['similarity']:.3f} │ Rating: {row['rating']:.1f}")
 
     print(f"\n{'=' * 70}")
-    print("🗺️  HEATMAP DE SIMILITUD")
+    print("HEATMAP DE SIMILITUD")
     print(f"{'=' * 70}")
 
     comparison_movies = [
@@ -388,5 +388,5 @@ if __name__ == "__main__":
     visualize_similarity_heatmap(comparison_movies, df, cosine_sim_tfidf, "TF-IDF")
 
     print(f"\n{'=' * 70}")
-    print("✅ Módulo 02 completado. Revisa las gráficas en output/")
+    print("Módulo 02 completado. Revisa las gráficas en output/")
     print(f"{'=' * 70}")
