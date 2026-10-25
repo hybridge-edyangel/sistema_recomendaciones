@@ -184,10 +184,13 @@ def weighted_rating(row, m, C):
 def create_soup(row):
     """
     Crea una "sopa de metadatos" concatenando múltiples campos de texto
-    para usar como entrada del vectorizador en content-based filtering.
+    (keywords, cast, director, genres, overview) para usar como entrada del
+    vectorizador en content-based filtering.
 
     La sopa combina:
     - Keywords (repetidas para darles más peso)
+    - Cast (actores principales, si existen)
+    - Director (si existe)
     - Géneros
     - Overview (sinopsis)
 
@@ -201,16 +204,28 @@ def create_soup(row):
         str: Cadena concatenada de metadatos en minúsculas
     """
     # Preparar keywords (sin espacios internos, para que sean tokens únicos)
-    keywords = " ".join([kw.lower().replace(" ", "") for kw in row["keywords_list"]])
+    keywords = " ".join([kw.lower().replace(" ", "") for kw in row.get("keywords_list", [])])
+
+    # Preparar cast y director si están disponibles en los metadatos
+    cast = ""
+    if "cast" in row and isinstance(row["cast"], list):
+        cast = " ".join([str(c).lower().replace(" ", "") for c in row["cast"][:3]])
+    elif "cast_list" in row and isinstance(row["cast_list"], list):
+        cast = " ".join([str(c).lower().replace(" ", "") for c in row["cast_list"][:3]])
+
+    director = ""
+    if "director" in row and pd.notna(row["director"]):
+        director = str(row["director"]).lower().replace(" ", "")
 
     # Preparar géneros (sin espacios internos)
-    genres = " ".join([g.lower().replace(" ", "") for g in row["genres_list"]])
+    genres = " ".join([g.lower().replace(" ", "") for g in row.get("genres_list", [])])
 
     # Overview limpio
-    overview = row["overview"].lower() if isinstance(row["overview"], str) else ""
+    overview = row["overview"].lower() if isinstance(row.get("overview", ""), str) else ""
 
-    # Concatenar todo (keywords repetidos para mayor peso)
-    return f"{keywords} {keywords} {genres} {genres} {overview}"
+    # Concatenar todo (keywords repetidos para mayor peso, cast, director, genres, overview)
+    parts = [keywords, keywords, cast, director, genres, genres, overview]
+    return " ".join([p for p in parts if p]).strip()
 
 
 # =============================================================================
